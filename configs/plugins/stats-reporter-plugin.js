@@ -14,6 +14,10 @@ function samplePluginReporter(pCruiseResult) {
     .map((pModule) => pModule.dependencies.length)
     .sort();
 
+  const lDependentCounts = pCruiseResult.modules
+    .map((pModule) => pModule.dependents.length)
+    .sort();
+
   return {
     moduleCount: pCruiseResult.summary.totalCruised,
     dependencyCount: pCruiseResult.summary.totalDependenciesCruised,
@@ -21,8 +25,8 @@ function samplePluginReporter(pCruiseResult) {
     maxDependenciesPerModule:
       lDependencyCounts[Math.max(lDependencyCounts.length - 1, 0)] || 0,
     meanDependenciesPerModule:
-      pCruiseResult.summary.totalCruised /
-      pCruiseResult.summary.totalDependenciesCruised,
+      pCruiseResult.summary.totalDependenciesCruised /
+      pCruiseResult.summary.totalCruised,
     medianDependenciesPerModule:
       lDependencyCounts[
         Math.max(0, Math.floor(lDependencyCounts.length * MEDIAN))
@@ -31,6 +35,18 @@ function samplePluginReporter(pCruiseResult) {
       lDependencyCounts[
         Math.max(0, Math.floor(lDependencyCounts.length * P75))
       ],
+    minDependentsPerModule: lDependentCounts[0] || 0,
+    maxDependentsPerModule:
+      lDependentCounts[Math.max(lDependentCounts.length - 1, 0)] || 0,
+    meanDependentsPerModule:
+      lDependentCounts.reduce((pAll, pCurrent) => pAll + pCurrent, 0) /
+      pCruiseResult.summary.totalCruised,
+    medianDependentsPerModule:
+      lDependentCounts[
+        Math.max(0, Math.floor(lDependentCounts.length * MEDIAN))
+      ],
+    p75DependentsPerModule:
+      lDependentCounts[Math.max(0, Math.floor(lDependentCounts.length * P75))],
   };
 }
 
